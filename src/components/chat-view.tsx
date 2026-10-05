@@ -29,6 +29,17 @@ export function ChatView({ initialQuestion }: ChatViewProps) {
 
   const isBusy = status === "submitted" || status === "streaming";
 
+  // While the answer has no text yet, show the thinking bubble instead of an
+  // empty one. If the AI has called a tool, it's looking something up.
+  const lastMessage = messages.at(-1);
+  const answerHasText =
+    lastMessage?.role === "assistant" && getMessageText(lastMessage) !== "";
+  const isThinking = isBusy && !answerHasText;
+  const isLookingUp =
+    isThinking &&
+    lastMessage?.role === "assistant" &&
+    lastMessage.parts.some((part) => part.type.startsWith("tool-"));
+
   // Send the landing-page question. In development React mounts, unmounts and
   // remounts components to catch bugs, and unmounting cancels useChat's request.
   // Waiting one tick (and cancelling the timer on unmount) means only the final
@@ -91,31 +102,41 @@ export function ChatView({ initialQuestion }: ChatViewProps) {
             </p>
           ) : (
             <ul className="flex flex-col gap-5">
-              {messages.map((message) => (
-                <li
-                  key={message.id}
-                  className={cn(
-                    "max-w-[85%] rounded-2xl px-4 py-2.5 leading-relaxed whitespace-pre-wrap",
-                    message.role === "user"
-                      ? // Your questions: plain dark bubble on the right.
-                        "bg-secondary self-end rounded-br-md"
-                      : // AniAsk's answers: violet-tinted bubble on the left.
-                        "border-primary/25 bg-primary/20 self-start rounded-bl-md border",
-                  )}
-                >
-                  {getMessageText(message)}
-                </li>
-              ))}
+              {messages
+                .filter(
+                  (message) =>
+                    message.role === "user" || getMessageText(message) !== "",
+                )
+                .map((message) => (
+                  <li
+                    key={message.id}
+                    className={cn(
+                      "max-w-[85%] rounded-2xl px-4 py-2.5 leading-relaxed whitespace-pre-wrap",
+                      message.role === "user"
+                        ? // Your questions: plain dark bubble on the right.
+                          "bg-secondary self-end rounded-br-md"
+                        : // AniAsk's answers: violet-tinted bubble on the left.
+                          "border-primary/25 bg-primary/20 self-start rounded-bl-md border",
+                    )}
+                  >
+                    {getMessageText(message)}
+                  </li>
+                ))}
 
               {/* Waiting for the first words of the answer. */}
-              {status === "submitted" && (
+              {isThinking && (
                 <li
                   aria-label="AniAsk is thinking"
-                  className="border-primary/25 bg-primary/20 flex gap-1.5 self-start rounded-2xl rounded-bl-md border px-4 py-4"
+                  className="border-primary/25 bg-primary/20 flex items-center gap-1.5 self-start rounded-2xl rounded-bl-md border px-4 py-3"
                 >
                   <span className="bg-primary size-2 animate-bounce rounded-full [animation-delay:-0.3s]" />
                   <span className="bg-primary size-2 animate-bounce rounded-full [animation-delay:-0.15s]" />
                   <span className="bg-primary size-2 animate-bounce rounded-full" />
+                  {isLookingUp && (
+                    <span className="text-muted-foreground ml-2 text-sm">
+                      Checking AniList…
+                    </span>
+                  )}
                 </li>
               )}
             </ul>
