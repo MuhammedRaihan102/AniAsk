@@ -54,10 +54,19 @@ export type TrendingAnime = {
   siteUrl: string;
 };
 
+// The landing page strip is the first thing every visitor sees, so it also
+// skips fan-service (Ecchi) shows. Chat answers still cover every anime.
 const TRENDING_QUERY = `
   query TrendingThisSeason($season: MediaSeason, $year: Int, $perPage: Int) {
     Page(perPage: $perPage) {
-      media(season: $season, seasonYear: $year, type: ANIME, isAdult: false, sort: TRENDING_DESC) {
+      media(
+        season: $season
+        seasonYear: $year
+        type: ANIME
+        isAdult: false
+        genre_not_in: ["Ecchi"]
+        sort: TRENDING_DESC
+      ) {
         id
         title { romaji english }
         coverImage { large color }
