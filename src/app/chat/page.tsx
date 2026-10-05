@@ -13,10 +13,11 @@ export default async function ChatPage({ searchParams }: PageProps<"/chat">) {
 
   return (
     <main className="flex h-dvh flex-col">
-      <header className="border-b px-4 py-3">
+      <header className="border-primary/20 border-b px-6 py-4">
         <Link
           href="/"
-          className="font-heading text-xl font-semibold tracking-tight"
+          aria-label="AniAsk home"
+          className="font-heading text-3xl font-bold tracking-tight transition hover:opacity-80"
         >
           Ani<span className="text-primary">Ask</span>
         </Link>

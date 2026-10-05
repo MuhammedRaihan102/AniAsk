@@ -42,7 +42,7 @@ export function QuestionInput({
         if (canSubmit) onSubmit();
       }}
       className={cn(
-        "bg-card focus-within:border-ring focus-within:ring-ring/30 flex items-end gap-2 rounded-2xl border p-2 shadow-lg transition focus-within:ring-3",
+        "border-primary/25 bg-card focus-within:border-ring focus-within:ring-ring/30 flex items-end gap-2 rounded-2xl border p-2 shadow-lg transition focus-within:ring-3",
         className,
       )}
     >

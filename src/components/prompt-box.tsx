@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { Sparkles } from "lucide-react";
 import { QuestionInput } from "@/components/question-input";
 
 const EXAMPLE_QUESTIONS = [
@@ -31,15 +31,15 @@ export function PromptBox() {
 
       <div className="flex flex-wrap justify-center gap-2">
         {EXAMPLE_QUESTIONS.map((example) => (
-          <Button
+          <button
             key={example}
-            variant="outline"
-            size="sm"
-            className="rounded-full"
+            type="button"
             onClick={() => setQuestion(example)}
+            className="border-primary/30 bg-primary/10 hover:border-primary/60 hover:bg-primary/20 focus-visible:ring-ring/50 inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm transition outline-none focus-visible:ring-3"
           >
+            <Sparkles className="text-primary-light size-3.5" aria-hidden />
             {example}
-          </Button>
+          </button>
         ))}
       </div>
     </div>

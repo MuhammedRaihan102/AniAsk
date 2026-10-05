@@ -18,7 +18,7 @@ export function MessageSources({ sources }: MessageSourcesProps) {
           href={source.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground inline-flex items-center gap-1 rounded-full border px-2.5 py-1 transition"
+          className="border-primary/30 bg-primary/10 text-primary-light hover:border-primary/60 hover:bg-primary/20 hover:text-foreground inline-flex items-center gap-1 rounded-full border px-2.5 py-1 transition"
         >
           {source.title}
           <ExternalLink className="size-3" aria-hidden />

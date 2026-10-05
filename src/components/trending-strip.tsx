@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { TrendingUp } from "lucide-react";
 import { FadingScrollRow } from "@/components/fading-scroll-row";
 import {
   getCurrentSeason,
@@ -25,17 +26,18 @@ export async function TrendingStrip() {
     <section aria-labelledby="trending-heading" className="w-full max-w-5xl">
       <h2
         id="trending-heading"
-        className="text-muted-foreground mb-3 px-1 text-sm font-medium"
+        className="text-muted-foreground mb-3 flex items-center gap-1.5 px-1 text-sm font-medium"
       >
+        <TrendingUp className="text-primary-light size-4" aria-hidden />
         Trending this season · {seasonName} {year}
       </h2>
 
-      <FadingScrollRow className="flex gap-4 pb-3">
+      <FadingScrollRow className="flex gap-5 pb-3">
         {anime.map((item) => {
           const title = item.title.english ?? item.title.romaji;
 
           return (
-            <li key={item.id} className="w-28 shrink-0 sm:w-32">
+            <li key={item.id} className="w-32 shrink-0 sm:w-40">
               <a
                 href={item.siteUrl}
                 target="_blank"
@@ -44,7 +46,7 @@ export async function TrendingStrip() {
               >
                 {/* The cover's main color shows while the image loads. */}
                 <div
-                  className="aspect-[2/3] overflow-hidden rounded-lg"
+                  className="group-hover:ring-primary/60 aspect-[2/3] overflow-hidden rounded-lg ring-1 ring-transparent transition"
                   style={{
                     backgroundColor: item.coverImage.color ?? undefined,
                   }}
@@ -54,11 +56,11 @@ export async function TrendingStrip() {
                     alt=""
                     width={230}
                     height={345}
-                    sizes="128px"
+                    sizes="160px"
                     className="size-full object-cover transition duration-300 group-hover:scale-105"
                   />
                 </div>
-                <p className="text-muted-foreground group-hover:text-foreground mt-2 line-clamp-2 text-xs transition">
+                <p className="text-muted-foreground group-hover:text-foreground mt-2 line-clamp-2 text-sm transition">
                   {title}
                 </p>
               </a>
