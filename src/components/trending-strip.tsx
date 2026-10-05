@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { FadingScrollRow } from "@/components/fading-scroll-row";
 import {
   getCurrentSeason,
   getTrendingThisSeason,
@@ -29,7 +30,7 @@ export async function TrendingStrip() {
         Trending this season · {seasonName} {year}
       </h2>
 
-      <ul className="scrollbar-subtle flex gap-4 overflow-x-auto [mask-image:linear-gradient(to_right,black_85%,transparent)] pb-3">
+      <FadingScrollRow className="flex gap-4 pb-3">
         {anime.map((item) => {
           const title = item.title.english ?? item.title.romaji;
 
@@ -64,7 +65,7 @@ export async function TrendingStrip() {
             </li>
           );
         })}
-      </ul>
+      </FadingScrollRow>
     </section>
   );
 }

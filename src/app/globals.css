@@ -146,3 +146,32 @@
       transparent;
   }
 }
+
+/*
+ * Edge fades for scrolling rows. Set --fade-left / --fade-right to a length
+ * to fade that edge; registering them with @property lets the fade animate.
+ */
+@property --fade-left {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --fade-right {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@utility fade-x {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black var(--fade-left),
+    black calc(100% - var(--fade-right)),
+    transparent
+  );
+  transition:
+    --fade-left 200ms ease,
+    --fade-right 200ms ease;
+}
