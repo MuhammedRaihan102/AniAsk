@@ -14,7 +14,10 @@ export default async function ChatPage({ searchParams }: PageProps<"/chat">) {
   return (
     <main className="flex h-dvh flex-col">
       <header className="border-b px-4 py-3">
-        <Link href="/" className="text-lg font-semibold tracking-tight">
+        <Link
+          href="/"
+          className="font-heading text-xl font-semibold tracking-tight"
+        >
           Ani<span className="text-primary">Ask</span>
         </Link>
       </header>
