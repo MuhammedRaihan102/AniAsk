@@ -130,3 +130,19 @@
     @apply font-sans;
   }
 }
+
+/* A thin scrollbar that blends into the dark theme and brightens on hover. */
+@utility scrollbar-subtle {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, var(--muted-foreground) 25%, transparent)
+    transparent;
+
+  &:hover {
+    scrollbar-color: color-mix(
+        in oklch,
+        var(--muted-foreground) 50%,
+        transparent
+      )
+      transparent;
+  }
+}

@@ -1,4 +1,5 @@
 import { PromptBox } from "@/components/prompt-box";
+import { TrendingStrip } from "@/components/trending-strip";
 
 export default function Home() {
   return (
@@ -15,7 +16,7 @@ export default function Home() {
 
       <PromptBox />
 
-      {/* Step 4: the "Trending this season" strip goes here. */}
+      <TrendingStrip />
     </main>
   );
 }
