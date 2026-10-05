@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, type KeyboardEvent } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { QuestionInput } from "@/components/question-input";
 
 const EXAMPLE_QUESTIONS = [
   "Who is the strongest Hashira in Demon Slayer?",
@@ -17,47 +17,17 @@ export function PromptBox() {
   const router = useRouter();
 
   function ask() {
-    const trimmed = question.trim();
-    if (!trimmed) return;
-    router.push(`/chat?q=${encodeURIComponent(trimmed)}`);
-  }
-
-  // Enter sends the question; Shift+Enter adds a new line.
-  function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-      ask();
-    }
+    router.push(`/chat?q=${encodeURIComponent(question.trim())}`);
   }
 
   return (
     <div className="flex w-full max-w-2xl flex-col gap-4">
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          ask();
-        }}
-        className="bg-card focus-within:border-ring focus-within:ring-ring/30 relative rounded-2xl border shadow-lg transition focus-within:ring-3"
-      >
-        <textarea
-          value={question}
-          onChange={(event) => setQuestion(event.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Ask anything about anime..."
-          aria-label="Your question"
-          rows={3}
-          className="placeholder:text-muted-foreground w-full resize-none bg-transparent px-5 pt-4 pb-14 text-base outline-none"
-        />
-        <Button
-          type="submit"
-          size="icon-lg"
-          disabled={!question.trim()}
-          aria-label="Ask"
-          className="absolute right-3 bottom-3 rounded-full"
-        >
-          <ArrowUp />
-        </Button>
-      </form>
+      <QuestionInput
+        value={question}
+        onValueChange={setQuestion}
+        onSubmit={ask}
+        rows={3}
+      />
 
       <div className="flex flex-wrap justify-center gap-2">
         {EXAMPLE_QUESTIONS.map((example) => (
