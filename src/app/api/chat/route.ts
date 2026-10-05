@@ -1,6 +1,8 @@
 import {
+  APICallError,
   convertToModelMessages,
   createUIMessageStreamResponse,
+  smoothStream,
   streamText,
   toUIMessageStream,
   type UIMessage,
@@ -25,9 +27,23 @@ export async function POST(request: Request) {
     model: getChatModel(),
     instructions: CHAT_INSTRUCTIONS,
     messages: await convertToModelMessages(messages.slice(-MAX_HISTORY)),
+    // Gemini sends text in big bursts; release it word by word so it reads smoothly.
+    experimental_transform: smoothStream({ delayInMs: 15, chunking: "word" }),
   });
 
   return createUIMessageStreamResponse({
-    stream: toUIMessageStream({ stream: result.stream }),
+    stream: toUIMessageStream({
+      stream: result.stream,
+      onError: describeError,
+    }),
   });
+}
+
+// The text the user sees when answering fails. Details stay in the server log.
+function describeError(error: unknown) {
+  console.error(error);
+  if (APICallError.isInstance(error) && error.statusCode === 429) {
+    return "AniAsk has reached its free AI limit for now. Please try again later.";
+  }
+  return "Something went wrong while answering. Please try again.";
 }

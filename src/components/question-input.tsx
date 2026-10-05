@@ -10,6 +10,8 @@ type QuestionInputProps = {
   onValueChange: (value: string) => void;
   onSubmit: () => void;
   rows?: number;
+  // Blocks sending (typing still works), e.g. while an answer is streaming.
+  disabled?: boolean;
   className?: string;
 };
 
@@ -20,9 +22,10 @@ export function QuestionInput({
   onValueChange,
   onSubmit,
   rows = 1,
+  disabled = false,
   className,
 }: QuestionInputProps) {
-  const canSubmit = value.trim().length > 0;
+  const canSubmit = value.trim().length > 0 && !disabled;
 
   // Enter sends the question; Shift+Enter adds a new line.
   function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
