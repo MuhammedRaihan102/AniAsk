@@ -2,25 +2,24 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
-import type { UIMessage } from "ai";
+import { MessageSources } from "@/components/message-sources";
 import { Button } from "@/components/ui/button";
 import { QuestionInput } from "@/components/question-input";
+import {
+  getMessageSources,
+  getMessageText,
+  type AniAskMessage,
+} from "@/lib/chat-messages";
 import { cn } from "@/lib/utils";
 
 type ChatViewProps = {
   initialQuestion: string;
 };
 
-// A message is made of "parts" (text, and later tool results). Join the text parts.
-function getMessageText(message: UIMessage) {
-  return message.parts
-    .map((part) => (part.type === "text" ? part.text : ""))
-    .join("");
-}
-
 export function ChatView({ initialQuestion }: ChatViewProps) {
   // useChat talks to /api/chat and keeps `messages` updated as the answer streams in.
-  const { messages, sendMessage, status, error, regenerate } = useChat();
+  const { messages, sendMessage, status, error, regenerate } =
+    useChat<AniAskMessage>();
   const [draft, setDraft] = useState("");
   const scrollerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -107,21 +106,39 @@ export function ChatView({ initialQuestion }: ChatViewProps) {
                   (message) =>
                     message.role === "user" || getMessageText(message) !== "",
                 )
-                .map((message) => (
-                  <li
-                    key={message.id}
-                    className={cn(
-                      "max-w-[85%] rounded-2xl px-4 py-2.5 leading-relaxed whitespace-pre-wrap",
-                      message.role === "user"
-                        ? // Your questions: plain dark bubble on the right.
-                          "bg-secondary self-end rounded-br-md"
-                        : // AniAsk's answers: violet-tinted bubble on the left.
-                          "border-primary/25 bg-primary/20 self-start rounded-bl-md border",
-                    )}
-                  >
-                    {getMessageText(message)}
-                  </li>
-                ))}
+                .map((message) => {
+                  const isUser = message.role === "user";
+                  // Sources appear once the answer has finished streaming.
+                  const isStreaming = isBusy && message.id === lastMessage?.id;
+
+                  return (
+                    <li
+                      key={message.id}
+                      className={cn(
+                        "flex max-w-[85%] flex-col",
+                        isUser
+                          ? "items-end self-end"
+                          : "items-start self-start",
+                      )}
+                    >
+                      <div
+                        className={cn(
+                          "rounded-2xl px-4 py-2.5 leading-relaxed whitespace-pre-wrap",
+                          isUser
+                            ? // Your questions: plain dark bubble on the right.
+                              "bg-secondary rounded-br-md"
+                            : // AniAsk's answers: violet-tinted bubble on the left.
+                              "border-primary/25 bg-primary/20 rounded-bl-md border",
+                        )}
+                      >
+                        {getMessageText(message)}
+                      </div>
+                      {!isUser && !isStreaming && (
+                        <MessageSources sources={getMessageSources(message)} />
+                      )}
+                    </li>
+                  );
+                })}
 
               {/* Waiting for the first words of the answer. */}
               {isThinking && (
